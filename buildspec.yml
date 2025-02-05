@@ -11,10 +11,14 @@ phases:
       - echo "Building the Docker image..."
       - docker build -t cicd-ecs-app .
       - docker tag cicd-ecs-app:latest 091846656105.dkr.ecr.us-west-1.amazonaws.com/cicd-ecs-app:latest
+
   post_build:
     commands:
       - echo "Pushing Docker image to ECR..."
       - docker push 091846656105.dkr.ecr.us-west-1.amazonaws.com/cicd-ecs-app:latest
+      - echo "Creating imagedefinitions.json file..."
+      - printf '[{"name":"cicd-ecs-app","imageUri":"091846656105.dkr.ecr.us-west-1.amazonaws.com/cicd-ecs-app:latest"}]' > imagedefinitions.json
+
 artifacts:
   files:
-    - '**/*'
+    - imagedefinitions.json
